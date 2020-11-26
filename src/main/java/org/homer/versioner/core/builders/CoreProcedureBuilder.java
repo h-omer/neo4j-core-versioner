@@ -2,6 +2,7 @@ package org.homer.versioner.core.builders;
 
 import org.homer.versioner.core.core.CoreProcedure;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Transaction;
 import org.neo4j.logging.Log;
 
 import java.util.Optional;
@@ -15,7 +16,7 @@ public abstract class CoreProcedureBuilder<T extends CoreProcedure> {
 
     private Class<T> clazz;
 
-    private GraphDatabaseService db;
+    private Transaction transaction;
     private Log log;
 
     /**
@@ -30,11 +31,11 @@ public abstract class CoreProcedureBuilder<T extends CoreProcedure> {
     /**
      * Adds a {@link GraphDatabaseService} and returns the current builder
      *
-     * @param db
+     * @param transaction
      * @return this
      */
-    public CoreProcedureBuilder<T> withDb(GraphDatabaseService db) {
-        this.db = db;
+    public CoreProcedureBuilder<T> withTransaction(Transaction transaction) {
+        this.transaction = transaction;
         return this;
     }
 
@@ -65,8 +66,8 @@ public abstract class CoreProcedureBuilder<T extends CoreProcedure> {
         T instance;
         try {
             instance = clazz.newInstance();
-            instance.db = db;
             instance.log = log;
+            instance.transaction = transaction;
         } catch (InstantiationException | IllegalAccessException e) {
            instance = null;
            log.error(e.getMessage());

@@ -49,7 +49,7 @@ public class Rollback extends CoreProcedure {
                 LocalDateTime currentDate = (LocalDateTime) currentRelationship.getProperty("date");
 
                 // Creating the rollback state, from the previous one
-                Node result = Utility.cloneNode(db, rollbackState);
+                Node result = Utility.cloneNode(transaction, rollbackState);
 
                 //Creating ROLLBACK_TYPE relationship
                 result.createRelationshipTo(rollbackState, RelationshipType.withName(Utility.ROLLBACK_TYPE));
@@ -103,7 +103,7 @@ public class Rollback extends CoreProcedure {
                     LocalDateTime currentDate = (LocalDateTime) currentRelationship.getProperty("date");
 
                     // Creating the rollback state, from the previous one
-                    Node result = Utility.cloneNode(db, state);
+                    Node result = Utility.cloneNode(transaction, state);
 
                     //Creating ROLLBACK_TYPE relationship
                     result.createRelationshipTo(state, RelationshipType.withName(Utility.ROLLBACK_TYPE));

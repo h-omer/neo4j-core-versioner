@@ -113,7 +113,7 @@ public class UpdateTest extends GenericProcedureTest {
             Result correctResult = session.run("MATCH (e:Entity)-[:CURRENT]->(s:State) RETURN id(s) as stateId");
 
             // Then
-            assertThat(correctResult.single().get("stateId").asLong(), equalTo(20L));
+            assertThat(correctResult.single().get("stateId").asLong(), equalTo(1L));
         }
     }
 
@@ -248,7 +248,7 @@ public class UpdateTest extends GenericProcedureTest {
             Result correctResult = session.run("MATCH (e:Entity)-[:CURRENT]->(s:State) RETURN id(s) as stateId");
 
             // Then
-            assertThat(correctResult.single().get("stateId").asLong(), equalTo(20L));
+            assertThat(correctResult.single().get("stateId").asLong(), equalTo(1L));
         }
     }
 

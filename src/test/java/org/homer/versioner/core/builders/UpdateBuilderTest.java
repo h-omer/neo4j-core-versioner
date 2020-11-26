@@ -3,6 +3,7 @@ package org.homer.versioner.core.builders;
 import org.homer.versioner.core.procedure.Update;
 import org.junit.Test;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Transaction;
 import org.neo4j.logging.Log;
 
 import java.util.Optional;
@@ -17,13 +18,13 @@ import static org.mockito.Mockito.mock;
 public class UpdateBuilderTest {
     @Test
     public void shouldBuildCorrectProcedureInstance() {
-        GraphDatabaseService db = mock(GraphDatabaseService.class);
+        Transaction transaction = mock(Transaction.class);
         Log log = mock(Log.class);
 
-        Optional<Update> result = new UpdateBuilder().withDb(db).withLog(log).build();
+        Optional<Update> result = new UpdateBuilder().withTransaction(transaction).withLog(log).build();
 
         assertThat(result.isPresent(), is(true));
-        assertThat(result.get().db, is(db));
+        assertThat(result.get().transaction, is(transaction));
         assertThat(result.get().log, is(log));
     }
 }

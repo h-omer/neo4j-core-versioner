@@ -5,6 +5,7 @@ import org.homer.versioner.core.output.NodeOutput;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.RelationshipType;
+import org.neo4j.graphdb.Transaction;
 import org.neo4j.procedure.Description;
 import org.neo4j.procedure.Mode;
 import org.neo4j.procedure.Name;
@@ -33,22 +34,22 @@ public class Init extends CoreProcedure {
             @Name(value = "additionalLabel", defaultValue = "") String additionalLabel,
             @Name(value = "date", defaultValue = "null") LocalDateTime date) {
 
-        Node entity = createNode(entityProps, singletonList(entityLabel));
+        Node entity = createNode(entityProps, singletonList(entityLabel), transaction);
 
-        Node state = createNode(stateProps, getStateLabels(additionalLabel));
+        Node state = createNode(stateProps, getStateLabels(additionalLabel), transaction);
 
         connectWithCurrentRelationship(entity, state, date);
 
         log.info(LOGGER_TAG + "Created a new Entity with label {} and id {}", entityLabel, entity.getId());
 
-        createRNodeAndAssociateTo(entity);
+        createRNodeAndAssociateTo(entity, transaction);
 
         return streamOfNodes(entity);
     }
 
-    private Node createNode(Map<String, Object> properties, List<String> labels)  {
+    private Node createNode(Map<String, Object> properties, List<String> labels, Transaction transaction)  {
 
-        return setProperties(db.beginTx().createNode(asLabels(labels)), properties);
+        return setProperties(transaction.createNode(asLabels(labels)), properties);
     }
 
     private void connectWithCurrentRelationship(Node entity, Node state, LocalDateTime date) {
@@ -57,9 +58,9 @@ public class Init extends CoreProcedure {
         addCurrentState(state, entity, instantDate);
     }
 
-    private void createRNodeAndAssociateTo(Node entity) {
+    private void createRNodeAndAssociateTo(Node entity, Transaction transaction) {
 
-        Node rNode = db.beginTx().createNode(Label.label("R"));
+        Node rNode = transaction.createNode(Label.label("R"));
         rNode.createRelationshipTo(entity, RelationshipType.withName("FOR"));
     }
 }

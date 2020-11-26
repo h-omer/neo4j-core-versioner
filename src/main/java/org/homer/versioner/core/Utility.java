@@ -84,15 +84,15 @@ public class Utility {
     /**
      * Creates a new node copying properties and asLabels form a given one
      *
-     * @param db   a {@link GraphDatabaseService} representing the database where the node will be created
+     * @param transaction   a {@link GraphDatabaseService} representing the database where the node will be created
      * @param node a {@link Node} representing the node to clone
      * @return {@link Node}
      */
-    public static Node cloneNode(GraphDatabaseService db, Node node) {
+    public static Node cloneNode(Transaction transaction, Node node) {
         List<String> labelNames = new ArrayList<>();
         Spliterator<Label> labelsIterator = node.getLabels().spliterator();
         StreamSupport.stream(labelsIterator, false).forEach(label -> labelNames.add(label.name()));
-        return setProperties(db.beginTx().createNode(asLabels(labelNames)), node.getAllProperties());
+        return setProperties(transaction.createNode(asLabels(labelNames)), node.getAllProperties());
     }
 
     /**

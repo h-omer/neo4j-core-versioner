@@ -35,7 +35,7 @@ public class Update extends CoreProcedure {
         if (!additionalLabel.isEmpty()) {
             labelNames.add(additionalLabel);
         }
-        Node result = setProperties(db.beginTx().createNode(asLabels(labelNames)), stateProps);
+        Node result = setProperties(transaction.createNode(asLabels(labelNames)), stateProps);
 
         LocalDateTime instantDate = defaultToNow(date);
 
@@ -84,7 +84,7 @@ public class Update extends CoreProcedure {
         Node newState = currentRelationshipOpt
                 .map(currentRelationship -> createPatchedState(stateProps, labelNames, instantDate, currentRelationship))
                 .orElseGet(() -> {
-                    Node result = setProperties(db.beginTx().createNode(asLabels(labelNames)), stateProps);
+                    Node result = setProperties(transaction.createNode(asLabels(labelNames)), stateProps);
                     addCurrentState(result, entity, instantDate);
                     return result;
                 });
@@ -137,7 +137,7 @@ public class Update extends CoreProcedure {
         // Patching the current node into the new one.
         Map<String, Object> patchedProps = currentState.getAllProperties();
         patchedProps.putAll(stateProps);
-        Node newStateToElaborate = setProperties(db.beginTx().createNode(asLabels(labels)), patchedProps);
+        Node newStateToElaborate = setProperties(transaction.createNode(asLabels(labels)), patchedProps);
 
         // Updating CURRENT state
         return currentStateUpdate(entity, instantDate, currentRelationship, currentState, currentDate, newStateToElaborate);
